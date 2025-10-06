@@ -1,15 +1,21 @@
 import Counter from "@/features/Counter/ui/Counter";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, it } from "vitest";
 
-describe("Counter", () => {
-  test("초기값은 0이어야 한다", () => {
+describe("Counter 컴포넌트", () => {
+  it("초기 렌더링 시 Count: 0을 표시해야 한다", () => {
     render(<Counter />);
-    expect(screen.getByText("Count: 0")).toBeInTheDocument();
+    expect(screen.getByText(/Count:\s*0/i)).toBeInTheDocument();
   });
 
-  test("버튼 클릭 시 값이 증가해야 한다", () => {
+  it("증가 버튼 클릭 시 카운트가 1 증가해야 한다", async () => {
     render(<Counter />);
-    fireEvent.click(screen.getByText("증가"));
-    expect(screen.getByText("Count: 1")).toBeInTheDocument();
+    const user = userEvent.setup();
+    const incBtn = screen.getByRole("button", { name: /증가/i });
+
+    await user.click(incBtn);
+
+    expect(screen.getByText(/Count:\s*1/i)).toBeInTheDocument();
   });
 });
